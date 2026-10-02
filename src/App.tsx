@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import { useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
 import { AuthModal } from './components/auth/AuthModal';
 import { Navbar } from './components/layout/Navbar';
 import { InsightsView } from './components/insights/InsightsView';
 import { WorkoutsView } from './components/workouts/WorkoutsView';
 import { DietView } from './components/diet/DietView';
 import { ProfileView } from './components/profile/ProfileView';
+import { EvolutionView } from './components/evolution/EvolutionView';
 import { Chatbot } from './components/ai/Chatbot';
 import { getSampleHistoryData } from './data/seedData';
 import { addWeightEntry, addWorkout, addMeal } from './firebase/firestoreService';
-import { Flame, TrendingUp, Dumbbell, Apple, User, Sparkles } from 'lucide-react';
+import { TrendingUp, Dumbbell, Apple, User, Sparkles } from 'lucide-react';
+
+const brandLogoDark = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
+const brandLogoLight = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
 
 export const App: React.FC = () => {
   const { user, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'insights' | 'workouts' | 'diet' | 'profile'>('insights');
+  const { theme } = useTheme();
+  const [activeTab, setActiveTab] = useState<'insights' | 'workouts' | 'diet' | 'evolution' | 'profile'>('insights');
   const [seeding, setSeeding] = useState(false);
   const [seedNotice, setSeedNotice] = useState<string | null>(null);
+  const brandLogo = theme === 'light' ? brandLogoLight : brandLogoDark;
 
   const handleSeedData = async () => {
     if (!user) return;
@@ -47,13 +54,8 @@ export const App: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-xl shadow-emerald-500/30 animate-bounce mb-4">
-          <Flame className="w-8 h-8 text-white" />
-        </div>
-        <p className="font-extrabold text-xl tracking-tight">
-          ACADEMIA <span className="text-emerald-400">AURA</span>
-        </p>
-        <span className="text-xs text-slate-500 mt-1">Carregando ambiente seguro...</span>
+        <img src={brandLogo} alt="Academia Aura" className="bodyfit-brand-image w-[380px] max-w-[80vw]" />
+        <span className="text-xs text-slate-500 mt-2">Carregando Academia Aura...</span>
       </div>
     );
   }
@@ -63,7 +65,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col pb-20 md:pb-10 transition-colors duration-300">
+    <div className="bodyfit-app-shell">
       
       {/* Top Navbar */}
       <Navbar
@@ -91,59 +93,9 @@ export const App: React.FC = () => {
         )}
         {activeTab === 'workouts' && <WorkoutsView />}
         {activeTab === 'diet' && <DietView />}
+        {activeTab === 'evolution' && <EvolutionView />}
         {activeTab === 'profile' && <ProfileView />}
       </main>
-
-      {/* Mobile Bottom Navigation Bar (Sticky for thumb ergonomics) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex justify-around items-center h-16 px-2">
-        <button
-          onClick={() => setActiveTab('insights')}
-          className={`flex flex-col items-center justify-center w-full h-full text-[10px] font-medium transition ${
-            activeTab === 'insights'
-              ? 'text-emerald-500 font-bold'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          <TrendingUp className="w-5 h-5 mb-0.5" />
-          <span>Insights</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('workouts')}
-          className={`flex flex-col items-center justify-center w-full h-full text-[10px] font-medium transition ${
-            activeTab === 'workouts'
-              ? 'text-emerald-500 font-bold'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          <Dumbbell className="w-5 h-5 mb-0.5" />
-          <span>Treino</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('diet')}
-          className={`flex flex-col items-center justify-center w-full h-full text-[10px] font-medium transition ${
-            activeTab === 'diet'
-              ? 'text-emerald-500 font-bold'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          <Apple className="w-5 h-5 mb-0.5" />
-          <span>Dieta</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('profile')}
-          className={`flex flex-col items-center justify-center w-full h-full text-[10px] font-medium transition ${
-            activeTab === 'profile'
-              ? 'text-emerald-500 font-bold'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          <User className="w-5 h-5 mb-0.5" />
-          <span>Perfil</span>
-        </button>
-      </nav>
 
       <Chatbot />
     </div>
