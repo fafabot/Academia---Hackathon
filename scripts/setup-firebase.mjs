@@ -6,7 +6,7 @@ const PROJECT_ID = 'academia-aura';
 const APP_NAME = 'academia-aura-web';
 
 console.log(`\n======================================================`);
-console.log(`🔥 ACADEMIA AURA - CONFIGURAÇÃO AUTOMATIZADA FIREBASE`);
+console.log(`🔥 BODYFIT - CONFIGURAÇÃO AUTOMATIZADA FIREBASE`);
 console.log(`======================================================\n`);
 
 function run(cmd, capture = true) {
