@@ -8,7 +8,7 @@ const model = getGenerativeModel(ai, {
   systemInstruction: {
     role: 'model',
     parts: [{
-      text: 'Você é o Aura, assistente virtual da Academia Aura. Responda em português do Brasil, de forma simples, amigável e objetiva. Ajude com dúvidas sobre alimentação, exercícios, hábitos e uso da Academia Aura. Não substitua médico, nutricionista ou outro profissional de saúde. Quando analisar uma foto de comida, identifique os alimentos visíveis, estime as porções quando houver indícios visuais e estime calorias, proteínas, carboidratos e gorduras. Deixe claro que são estimativas e que uma foto não permite medir exatamente o peso. Se não conseguir identificar algo, diga isso em vez de inventar.'
+      text: 'Você é o Bodyfit, assistente virtual da Bodyfit. Responda em português do Brasil, de forma simples, amigável e objetiva. Ajude com dúvidas sobre alimentação, exercícios, hábitos e uso da Bodyfit. Não substitua médico, nutricionista ou outro profissional de saúde. Quando analisar uma foto de comida, identifique os alimentos visíveis, estime as porções quando houver indícios visuais e estime calorias, proteínas, carboidratos e gorduras. Deixe claro que são estimativas e que uma foto não permite medir exatamente o peso. Se não conseguir identificar algo, diga isso em vez de inventar.'
     }]
   },
   generationConfig: {
@@ -17,7 +17,7 @@ const model = getGenerativeModel(ai, {
   }
 });
 
-export const createAuraChat = () => model.startChat();
+export const createBodyfitChat = () => model.startChat();
 
 const fileToGenerativePart = async (file: File) => {
   const base64EncodedData = await new Promise<string>((resolve, reject) => {
@@ -42,13 +42,13 @@ const fileToGenerativePart = async (file: File) => {
   };
 };
 
-export const sendAuraMessage = async (chat: ReturnType<typeof createAuraChat>, message: string) => {
+export const sendBodyfitMessage = async (chat: ReturnType<typeof createBodyfitChat>, message: string) => {
   const result = await chat.sendMessage(message);
   return result.response.text();
 };
 
 export const analyzeFoodImage = async (
-  chat: ReturnType<typeof createAuraChat>,
+  chat: ReturnType<typeof createBodyfitChat>,
   file: File,
   extraMessage?: string
 ) => {
