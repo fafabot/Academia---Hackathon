@@ -258,12 +258,11 @@ export async function getMeals(userId: string): Promise<MealEntry[]> {
     const snap = await getDocs(q);
     const items: MealEntry[] = [];
     snap.forEach((d) => items.push({ id: d.id, ...(d.data() as MealEntry) }));
-    if (items.length > 0) return items;
+    return items;
   } catch (error) {
-    console.warn('Firestore getMeals error:', error);
+    console.error('Firestore getMeals error:', error);
+    throw error;
   }
-  const local = localStorage.getItem(`meals_${userId}`);
-  return local ? JSON.parse(local) : [];
 }
 
 export async function addMeal(meal: MealEntry): Promise<MealEntry> {
@@ -273,8 +272,8 @@ export async function addMeal(meal: MealEntry): Promise<MealEntry> {
     const docRef = await addDoc(colRef, created);
     created.id = docRef.id;
   } catch (error) {
-    console.warn('Firestore addMeal error (fallback local):', error);
-    created.id = 'meal_' + Date.now();
+    console.error('Firestore addMeal error:', error);
+    throw error;
   }
   const list = await getMeals(meal.userId);
   const updated = [created, ...list.filter((m) => m.id !== created.id)].sort((a, b) => b.date.localeCompare(a.date));
