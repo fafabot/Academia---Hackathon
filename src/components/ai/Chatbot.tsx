@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Bot, Camera, Image as ImageIcon, Loader2, Send, Sparkles, X } from 'lucide-react';
-import { analyzeFoodImage, createAuraChat, sendAuraMessage } from '../../firebase/aiService';
+import { analyzeFoodImage, createBodyfitChat, sendBodyfitMessage } from '../../firebase/aiService';
 
 interface ChatMessage {
   id: number;
@@ -19,10 +19,10 @@ export const Chatbot: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const chatRef = useRef<ReturnType<typeof createAuraChat> | null>(null);
+  const chatRef = useRef<ReturnType<typeof createBodyfitChat> | null>(null);
 
   const getChat = () => {
-    if (!chatRef.current) chatRef.current = createAuraChat();
+    if (!chatRef.current) chatRef.current = createBodyfitChat();
     return chatRef.current;
   };
 
@@ -66,10 +66,10 @@ export const Chatbot: React.FC = () => {
       const chat = getChat();
       const response = image
         ? await analyzeFoodImage(chat, image, text)
-        : await sendAuraMessage(chat, text);
+        : await sendBodyfitMessage(chat, text);
       addMessage('assistant', response);
     } catch (error) {
-      console.error('Erro no chatbot Aura:', error);
+      console.error('Erro no chatbot Bodyfit:', error);
       addMessage('assistant', 'Não consegui falar com a IA agora. Verifique se o Gemini está habilitado no Firebase e tente novamente.');
     } finally {
       setLoading(false);
@@ -86,7 +86,7 @@ export const Chatbot: React.FC = () => {
   return (
     <>
       {!open && (
-        <button onClick={() => setOpen(true)} className="bodyfit-chat-launcher fixed right-5 bottom-5 md:right-7 md:bottom-7 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/30 flex items-center justify-center transition-all hover:scale-105" title="Abrir assistente Aura">
+        <button onClick={() => setOpen(true)} className="bodyfit-chat-launcher fixed right-5 bottom-5 md:right-7 md:bottom-7 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/30 flex items-center justify-center transition-all hover:scale-105" title="Abrir assistente Bodyfit">
           <Bot className="w-7 h-7" />
         </button>
       )}
@@ -97,8 +97,8 @@ export const Chatbot: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center"><Sparkles className="w-5 h-5" /></div>
               <div>
-                <p className="font-bold text-sm">Aura IA</p>
-                <p className="text-[11px] text-emerald-50">Seu assistente da Academia Aura</p>
+                <p className="font-bold text-sm">Bodyfit IA</p>
+                <p className="text-[11px] text-emerald-50">Seu assistente da Bodyfit</p>
               </div>
             </div>
             <button onClick={() => setOpen(false)} className="p-2 rounded-lg hover:bg-white/10" title="Fechar"><X className="w-5 h-5" /></button>
