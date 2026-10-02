@@ -1,4 +1,4 @@
-export type ThemeMode = 'dark' | 'light' | 'emerald' | 'cyberpunk' | 'sunset';
+export type ThemeMode = 'dark' | 'light';
 
 export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'very_active' | 'extra_active';
 

@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, Target, Scale, Ruler, AlertCircle, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { getAuthErrorMessage } from '../../firebase/authService';
 import { isStrictlyPositive } from '../../utils/validation';
 
+const brandLogoDark = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
+const brandLogoLight = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
+
 export const AuthModal: React.FC = () => {
   const { login, signup, resetPassword, loginAsDemoAthlete } = useAuth();
+  const { theme } = useTheme();
   const [mode, setMode] = useState<'login' | 'signup' | 'reset'>('login');
+  const brandLogo = theme === 'light' ? brandLogoLight : brandLogoDark;
 
   // Form states
   const [email, setEmail] = useState('');
@@ -105,8 +111,9 @@ export const AuthModal: React.FC = () => {
 
         {/* Brand header */}
         <div className="text-center mb-6 relative">
-          <div className="bodyfit-auth-logo"><img src="https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png" alt="Body Fit" /></div>
-          <h1 className="bodyfit-auth-title">BODY<span>FIT</span></h1>
+          <div className="bodyfit-auth-logo">
+            <img src={brandLogo} alt="Academia Aura" className="bodyfit-brand-image" />
+          </div>
           <p className="text-xs text-slate-400 mt-1">
             Plataforma Integrada de Treino, Alimentação & Evolução
           </p>

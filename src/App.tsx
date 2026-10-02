@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
 import { AuthModal } from './components/auth/AuthModal';
 import { Navbar } from './components/layout/Navbar';
 import { InsightsView } from './components/insights/InsightsView';
@@ -10,13 +11,18 @@ import { EvolutionView } from './components/evolution/EvolutionView';
 import { Chatbot } from './components/ai/Chatbot';
 import { getSampleHistoryData } from './data/seedData';
 import { addWeightEntry, addWorkout, addMeal } from './firebase/firestoreService';
-import { Flame, TrendingUp, Dumbbell, Apple, User, Sparkles } from 'lucide-react';
+import { TrendingUp, Dumbbell, Apple, User, Sparkles } from 'lucide-react';
+
+const brandLogoDark = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
+const brandLogoLight = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
 
 export const App: React.FC = () => {
   const { user, loading } = useAuth();
+  const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState<'insights' | 'workouts' | 'diet' | 'evolution' | 'profile'>('insights');
   const [seeding, setSeeding] = useState(false);
   const [seedNotice, setSeedNotice] = useState<string | null>(null);
+  const brandLogo = theme === 'light' ? brandLogoLight : brandLogoDark;
 
   const handleSeedData = async () => {
     if (!user) return;
@@ -48,13 +54,8 @@ export const App: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-xl shadow-emerald-500/30 animate-bounce mb-4">
-          <Flame className="w-8 h-8 text-white" />
-        </div>
-        <p className="font-extrabold text-xl tracking-tight">
-          BODY<span className="text-cyan-300">FIT</span>
-        </p>
-        <span className="text-xs text-slate-500 mt-1">Carregando Body Fit...</span>
+        <img src={brandLogo} alt="Academia Aura" className="bodyfit-brand-image w-[380px] max-w-[80vw]" />
+        <span className="text-xs text-slate-500 mt-2">Carregando Academia Aura...</span>
       </div>
     );
   }

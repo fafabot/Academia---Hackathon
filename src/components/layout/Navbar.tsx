@@ -12,6 +12,10 @@ import {
   Activity,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
+
+const brandLogoDark = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
+const brandLogoLight = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
 
 interface NavbarProps {
   activeTab: 'insights' | 'workouts' | 'diet' | 'evolution' | 'profile';
@@ -21,7 +25,9 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onSeedData }) => {
   const { user, profile, logout, isDemoMode } = useAuth();
+  const { theme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const brandLogo = theme === 'light' ? brandLogoLight : brandLogoDark;
 
   const navItems = [
     { id: 'insights' as const, label: 'Visão geral', icon: TrendingUp },
@@ -41,9 +47,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onSeedD
   return (
     <>
       <aside className="bodyfit-sidebar">
-        <button className="bodyfit-sidebar-brand" onClick={() => selectTab('insights')} aria-label="Body Fit">
+        <button className="bodyfit-sidebar-brand" onClick={() => selectTab('insights')} aria-label="Academia Aura">
           <span className="bodyfit-sidebar-logo">
-            <img src="https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png" alt="Body Fit" />
+            <img src={brandLogo} alt="Academia Aura" className="bodyfit-brand-image" />
           </span>
         </button>
 
