@@ -47,9 +47,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onSeedD
   return (
     <>
       <aside className="bodyfit-sidebar">
-        <button className="bodyfit-sidebar-brand" onClick={() => selectTab('insights')} aria-label="Academia Aura">
+        <button className="bodyfit-sidebar-brand" onClick={() => selectTab('insights')} aria-label="Bodyfit">
           <span className="bodyfit-sidebar-logo">
-            <img src={brandLogo} alt="Academia Aura" className="bodyfit-brand-image" />
+            <img src={brandLogo} alt="Bodyfit" className="bodyfit-brand-image" />
           </span>
         </button>
 
@@ -96,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onSeedD
       <header className="bodyfit-topbar bodyfit-mobile-header">
         <div className="bodyfit-topbar-date">
           <Activity size={14} />
-          <span>Academia Aura</span>
+          <span>Bodyfit</span>
         </div>
         <button className="bodyfit-mobile-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Abrir menu">
           {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
