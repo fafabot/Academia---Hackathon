@@ -93,6 +93,16 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onSeedD
         </div>
       </aside>
 
+      <header className="bodyfit-topbar bodyfit-mobile-header">
+        <div className="bodyfit-topbar-date">
+          <Activity size={14} />
+          <span>Academia Aura</span>
+        </div>
+        <button className="bodyfit-mobile-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Abrir menu">
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </header>
+
       {mobileMenuOpen && (
         <nav className="bodyfit-mobile-menu">
           {navItems.map((item) => {
