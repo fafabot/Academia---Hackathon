@@ -51,9 +51,9 @@ export const App: React.FC = () => {
           <Flame className="w-8 h-8 text-white" />
         </div>
         <p className="font-extrabold text-xl tracking-tight">
-          ACADEMIA <span className="text-emerald-400">AURA</span>
+          BODY<span className="text-cyan-300">FIT</span>
         </p>
-        <span className="text-xs text-slate-500 mt-1">Carregando ambiente seguro...</span>
+        <span className="text-xs text-slate-500 mt-1">Carregando Body Fit...</span>
       </div>
     );
   }
