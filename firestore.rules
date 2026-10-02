@@ -1,0 +1,415 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structures:
+//
+// Collection: /users/{userId}
+// Document ID: userId (must match request.auth.uid)
+// Fields:
+//   - uid: string (required, 1-128 chars, immutable, equals userId)
+//   - email: string (required, valid email pattern, 3-254 chars)
+//   - displayName: string (required, 1-100 chars)
+//   - photoURL: string (optional, valid http/https URL, 10-2048 chars)
+//   - targetWeight: number (required, kg, 10 < value <= 500)
+//   - dailyCalorieGoal: number (required, kcal, 500 <= value <= 15000)
+//   - currentWeight: number (required, kg, 10 < value <= 500)
+//   - height: number (required, cm, 50 <= value <= 300)
+//   - activityLevel: string (required, enum: 'sedentary'|'light'|'moderate'|'very_active'|'extra_active')
+//   - themePreference: string (required, enum: 'dark'|'light'|'emerald'|'cyberpunk'|'sunset')
+//   - createdAt: string (required, ISO 8601 date string, 10-50 chars, immutable)
+//   - updatedAt: string (required, ISO 8601 date string, 10-50 chars)
+//
+// Subcollection: /users/{userId}/weightHistory/{entryId}
+// Document ID: entryId (auto-generated or client id)
+// Fields:
+//   - id: string (optional, 1-128 chars)
+//   - userId: string (required, 1-128 chars, immutable, equals userId)
+//   - date: string (required, YYYY-MM-DD pattern)
+//   - weight: number (required, kg, 10 < value <= 500)
+//   - notes: string (optional, 0-1000 chars)
+//   - createdAt: string (optional, ISO 8601 date string, 10-50 chars, immutable)
+//
+// Subcollection: /users/{userId}/exercises/{exerciseId}
+// Document ID: exerciseId (auto-generated or client id)
+// Fields:
+//   - id: string (optional, 1-128 chars)
+//   - userId: string (required, 1-128 chars, immutable, equals userId)
+//   - name: string (required, 1-100 chars)
+//   - category: string (required, enum: 'chest'|'back'|'legs'|'shoulders'|'arms'|'core'|'cardio')
+//   - equipment: string (required, enum: 'barbell'|'dumbbell'|'machine'|'cable'|'bodyweight'|'cardio_machine'|'other')
+//   - defaultRestSeconds: number (optional, seconds, 0 <= value <= 1800)
+//   - notes: string (optional, 0-1000 chars)
+//   - createdAt: string (optional, ISO 8601 date string, 10-50 chars, immutable)
+//
+// Subcollection: /users/{userId}/workouts/{workoutId}
+// Document ID: workoutId (auto-generated or client id)
+// Fields:
+//   - id: string (optional, 1-128 chars)
+//   - userId: string (required, 1-128 chars, immutable, equals userId)
+//   - title: string (required, 1-120 chars)
+//   - date: string (required, YYYY-MM-DD pattern)
+//   - durationMinutes: number (required, 0 <= value <= 1440)
+//   - exercises: list (required, max 50 items)
+//   - totalVolume: number (required, 0 <= value <= 500000)
+//   - estimatedCaloriesBurned: number (required, 0 <= value <= 20000)
+//   - progressionStatus: string (optional, enum: 'evoluindo'|'estagnado'|'regredindo')
+//   - progressionDiffPercent: number (optional, -100 <= value <= 1000)
+//   - notes: string (optional, 0-2000 chars)
+//   - createdAt: string (optional, ISO 8601 date string, 10-50 chars, immutable)
+//
+// Subcollection: /users/{userId}/foods/{foodId}
+// Document ID: foodId (auto-generated or client id)
+// Fields:
+//   - id: string (optional, 1-128 chars)
+//   - userId: string (required, 1-128 chars, immutable, equals userId)
+//   - name: string (required, 1-100 chars)
+//   - brand: string (optional, 0-100 chars)
+//   - servingSize: number (required, 0 < value <= 10000)
+//   - servingUnit: string (required, enum: 'g'|'ml'|'unidade')
+//   - calories: number (required, 0 <= value <= 10000)
+//   - protein: number (required, 0 <= value <= 1000)
+//   - carbs: number (required, 0 <= value <= 1000)
+//   - fat: number (required, 0 <= value <= 1000)
+//   - fiber: number (optional, 0 <= value <= 500)
+//   - createdAt: string (optional, ISO 8601 date string, 10-50 chars, immutable)
+//
+// Subcollection: /users/{userId}/meals/{mealId}
+// Document ID: mealId (auto-generated or client id)
+// Fields:
+//   - id: string (optional, 1-128 chars)
+//   - userId: string (required, 1-128 chars, immutable, equals userId)
+//   - date: string (required, YYYY-MM-DD pattern)
+//   - mealType: string (required, enum: 'cafe_da_manha'|'almoco'|'lanche'|'jantar'|'ceia')
+//   - items: list (required, max 50 items)
+//   - totalCalories: number (required, 0 <= value <= 20000)
+//   - totalProtein: number (required, 0 <= value <= 1000)
+//   - totalCarbs: number (required, 0 <= value <= 2000)
+//   - totalFat: number (required, 0 <= value <= 1000)
+//   - notes: string (optional, 0-1000 chars)
+//   - createdAt: string (optional, ISO 8601 date string, 10-50 chars, immutable)
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user owns the resource (path-based ownership)
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Validate that required fields exist in request.resource.data
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Validate that the document contains only allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate email format
+    function isValidEmail(email) {
+      return email is string &&
+        email.size() >= 3 &&
+        email.size() <= 254 &&
+        email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+[.][a-zA-Z]{2,}$');
+    }
+
+    // Validate web URL format
+    function isValidUrl(url) {
+      return url is string &&
+        url.size() >= 10 &&
+        url.size() <= 2048 &&
+        (url.matches('^https://.*') || url.matches('^http://.*'));
+    }
+
+    // Validate calendar date string (YYYY-MM-DD)
+    function isValidDateString(dateStr) {
+      return dateStr is string &&
+        dateStr.size() == 10 &&
+        dateStr.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+
+    // Validate ISO 8601 timestamp string format
+    function isValidIsoTimestamp(isoStr) {
+      return isoStr is string &&
+        isoStr.size() >= 10 &&
+        isoStr.size() <= 50 &&
+        isoStr.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.*$');
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    // --- User Profile Validator ---
+    function isValidUserProfile(data, userId) {
+      return hasRequiredFields([
+          'uid', 'email', 'displayName', 'targetWeight',
+          'dailyCalorieGoal', 'currentWeight', 'height',
+          'activityLevel', 'themePreference', 'createdAt', 'updatedAt'
+        ]) &&
+        hasOnlyAllowedFields([
+          'uid', 'email', 'displayName', 'photoURL', 'targetWeight',
+          'dailyCalorieGoal', 'currentWeight', 'height',
+          'activityLevel', 'themePreference', 'createdAt', 'updatedAt'
+        ]) &&
+        data.uid is string &&
+        data.uid == userId &&
+        data.uid == request.auth.uid &&
+        isValidEmail(data.email) &&
+        data.displayName is string &&
+        data.displayName.size() >= 1 &&
+        data.displayName.size() <= 100 &&
+        (!('photoURL' in data) || data.photoURL == null || isValidUrl(data.photoURL)) &&
+        data.targetWeight is number &&
+        data.targetWeight > 10 &&
+        data.targetWeight <= 500 &&
+        data.dailyCalorieGoal is number &&
+        data.dailyCalorieGoal >= 500 &&
+        data.dailyCalorieGoal <= 15000 &&
+        data.currentWeight is number &&
+        data.currentWeight > 10 &&
+        data.currentWeight <= 500 &&
+        data.height is number &&
+        data.height >= 50 &&
+        data.height <= 300 &&
+        data.activityLevel in ['sedentary', 'light', 'moderate', 'very_active', 'extra_active'] &&
+        data.themePreference in ['dark', 'light', 'emerald', 'cyberpunk', 'sunset'] &&
+        isValidIsoTimestamp(data.createdAt) &&
+        isValidIsoTimestamp(data.updatedAt);
+    }
+
+    function areImmutableUserProfileFieldsUnchanged() {
+      return request.resource.data.uid == resource.data.uid &&
+        request.resource.data.createdAt == resource.data.createdAt;
+    }
+
+    // --- Weight Entry Validator ---
+    function isValidWeightEntry(data, userId) {
+      return hasRequiredFields(['userId', 'date', 'weight']) &&
+        hasOnlyAllowedFields(['id', 'userId', 'date', 'weight', 'notes', 'createdAt']) &&
+        (!('id' in data) || (data.id is string && data.id.size() >= 1 && data.id.size() <= 128)) &&
+        data.userId is string &&
+        data.userId == userId &&
+        data.userId == request.auth.uid &&
+        isValidDateString(data.date) &&
+        data.weight is number &&
+        data.weight > 10 &&
+        data.weight <= 500 &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000)) &&
+        (!('createdAt' in data) || isValidIsoTimestamp(data.createdAt));
+    }
+
+    function areImmutableWeightEntryFieldsUnchanged() {
+      return request.resource.data.userId == resource.data.userId &&
+        (!('createdAt' in resource.data) ||
+          ('createdAt' in request.resource.data && request.resource.data.createdAt == resource.data.createdAt));
+    }
+
+    // --- Exercise Validator ---
+    function isValidExercise(data, userId) {
+      return hasRequiredFields(['userId', 'name', 'category', 'equipment']) &&
+        hasOnlyAllowedFields(['id', 'userId', 'name', 'category', 'equipment', 'defaultRestSeconds', 'notes', 'createdAt']) &&
+        (!('id' in data) || (data.id is string && data.id.size() >= 1 && data.id.size() <= 128)) &&
+        data.userId is string &&
+        data.userId == userId &&
+        data.userId == request.auth.uid &&
+        data.name is string &&
+        data.name.size() >= 1 &&
+        data.name.size() <= 100 &&
+        data.category in ['chest', 'back', 'legs', 'shoulders', 'arms', 'core', 'cardio'] &&
+        data.equipment in ['barbell', 'dumbbell', 'machine', 'cable', 'bodyweight', 'cardio_machine', 'other'] &&
+        (!('defaultRestSeconds' in data) || (data.defaultRestSeconds is number && data.defaultRestSeconds >= 0 && data.defaultRestSeconds <= 1800)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000)) &&
+        (!('createdAt' in data) || isValidIsoTimestamp(data.createdAt));
+    }
+
+    function areImmutableExerciseFieldsUnchanged() {
+      return request.resource.data.userId == resource.data.userId &&
+        (!('createdAt' in resource.data) ||
+          ('createdAt' in request.resource.data && request.resource.data.createdAt == resource.data.createdAt));
+    }
+
+    // --- Workout Session Validator ---
+    function isValidWorkoutSession(data, userId) {
+      return hasRequiredFields(['userId', 'title', 'date', 'durationMinutes', 'exercises', 'totalVolume', 'estimatedCaloriesBurned']) &&
+        hasOnlyAllowedFields([
+          'id', 'userId', 'title', 'date', 'durationMinutes', 'exercises',
+          'totalVolume', 'estimatedCaloriesBurned', 'progressionStatus',
+          'progressionDiffPercent', 'notes', 'createdAt'
+        ]) &&
+        (!('id' in data) || (data.id is string && data.id.size() >= 1 && data.id.size() <= 128)) &&
+        data.userId is string &&
+        data.userId == userId &&
+        data.userId == request.auth.uid &&
+        data.title is string &&
+        data.title.size() >= 1 &&
+        data.title.size() <= 120 &&
+        isValidDateString(data.date) &&
+        data.durationMinutes is number &&
+        data.durationMinutes >= 0 &&
+        data.durationMinutes <= 1440 &&
+        data.exercises is list &&
+        data.exercises.size() <= 50 &&
+        data.totalVolume is number &&
+        data.totalVolume >= 0 &&
+        data.totalVolume <= 500000 &&
+        data.estimatedCaloriesBurned is number &&
+        data.estimatedCaloriesBurned >= 0 &&
+        data.estimatedCaloriesBurned <= 20000 &&
+        (!('progressionStatus' in data) || data.progressionStatus in ['evoluindo', 'estagnado', 'regredindo']) &&
+        (!('progressionDiffPercent' in data) || (data.progressionDiffPercent is number && data.progressionDiffPercent >= -100 && data.progressionDiffPercent <= 1000)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 2000)) &&
+        (!('createdAt' in data) || isValidIsoTimestamp(data.createdAt));
+    }
+
+    function areImmutableWorkoutSessionFieldsUnchanged() {
+      return request.resource.data.userId == resource.data.userId &&
+        (!('createdAt' in resource.data) ||
+          ('createdAt' in request.resource.data && request.resource.data.createdAt == resource.data.createdAt));
+    }
+
+    // --- Food Item Validator ---
+    function isValidFoodItem(data, userId) {
+      return hasRequiredFields(['userId', 'name', 'servingSize', 'servingUnit', 'calories', 'protein', 'carbs', 'fat']) &&
+        hasOnlyAllowedFields(['id', 'userId', 'name', 'brand', 'servingSize', 'servingUnit', 'calories', 'protein', 'carbs', 'fat', 'fiber', 'createdAt']) &&
+        (!('id' in data) || (data.id is string && data.id.size() >= 1 && data.id.size() <= 128)) &&
+        data.userId is string &&
+        data.userId == userId &&
+        data.userId == request.auth.uid &&
+        data.name is string &&
+        data.name.size() >= 1 &&
+        data.name.size() <= 100 &&
+        (!('brand' in data) || (data.brand is string && data.brand.size() <= 100)) &&
+        data.servingSize is number &&
+        data.servingSize > 0 &&
+        data.servingSize <= 10000 &&
+        data.servingUnit in ['g', 'ml', 'unidade'] &&
+        data.calories is number &&
+        data.calories >= 0 &&
+        data.calories <= 10000 &&
+        data.protein is number &&
+        data.protein >= 0 &&
+        data.protein <= 1000 &&
+        data.carbs is number &&
+        data.carbs >= 0 &&
+        data.carbs <= 1000 &&
+        data.fat is number &&
+        data.fat >= 0 &&
+        data.fat <= 1000 &&
+        (!('fiber' in data) || (data.fiber is number && data.fiber >= 0 && data.fiber <= 500)) &&
+        (!('createdAt' in data) || isValidIsoTimestamp(data.createdAt));
+    }
+
+    function areImmutableFoodItemFieldsUnchanged() {
+      return request.resource.data.userId == resource.data.userId &&
+        (!('createdAt' in resource.data) ||
+          ('createdAt' in request.resource.data && request.resource.data.createdAt == resource.data.createdAt));
+    }
+
+    // --- Meal Entry Validator ---
+    function isValidMealEntry(data, userId) {
+      return hasRequiredFields(['userId', 'date', 'mealType', 'items', 'totalCalories', 'totalProtein', 'totalCarbs', 'totalFat']) &&
+        hasOnlyAllowedFields(['id', 'userId', 'date', 'mealType', 'items', 'totalCalories', 'totalProtein', 'totalCarbs', 'totalFat', 'notes', 'createdAt']) &&
+        (!('id' in data) || (data.id is string && data.id.size() >= 1 && data.id.size() <= 128)) &&
+        data.userId is string &&
+        data.userId == userId &&
+        data.userId == request.auth.uid &&
+        isValidDateString(data.date) &&
+        data.mealType in ['cafe_da_manha', 'almoco', 'lanche', 'jantar', 'ceia'] &&
+        data.items is list &&
+        data.items.size() <= 50 &&
+        data.totalCalories is number &&
+        data.totalCalories >= 0 &&
+        data.totalCalories <= 20000 &&
+        data.totalProtein is number &&
+        data.totalProtein >= 0 &&
+        data.totalProtein <= 1000 &&
+        data.totalCarbs is number &&
+        data.totalCarbs >= 0 &&
+        data.totalCarbs <= 2000 &&
+        data.totalFat is number &&
+        data.totalFat >= 0 &&
+        data.totalFat <= 1000 &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000)) &&
+        (!('createdAt' in data) || isValidIsoTimestamp(data.createdAt));
+    }
+
+    function areImmutableMealEntryFieldsUnchanged() {
+      return request.resource.data.userId == resource.data.userId &&
+        (!('createdAt' in resource.data) ||
+          ('createdAt' in request.resource.data && request.resource.data.createdAt == resource.data.createdAt));
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // Root collection: /users/{userId}
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(request.resource.data, userId);
+      allow update: if isOwner(userId) && isValidUserProfile(request.resource.data, userId) && areImmutableUserProfileFieldsUnchanged();
+      allow delete: if isOwner(userId);
+
+      // Subcollection: /users/{userId}/weightHistory/{entryId}
+      match /weightHistory/{entryId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidWeightEntry(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidWeightEntry(request.resource.data, userId) && areImmutableWeightEntryFieldsUnchanged();
+        allow delete: if isOwner(userId);
+      }
+
+      // Subcollection: /users/{userId}/exercises/{exerciseId}
+      match /exercises/{exerciseId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidExercise(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidExercise(request.resource.data, userId) && areImmutableExerciseFieldsUnchanged();
+        allow delete: if isOwner(userId);
+      }
+
+      // Subcollection: /users/{userId}/workouts/{workoutId}
+      match /workouts/{workoutId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidWorkoutSession(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidWorkoutSession(request.resource.data, userId) && areImmutableWorkoutSessionFieldsUnchanged();
+        allow delete: if isOwner(userId);
+      }
+
+      // Subcollection: /users/{userId}/foods/{foodId}
+      match /foods/{foodId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidFoodItem(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidFoodItem(request.resource.data, userId) && areImmutableFoodItemFieldsUnchanged();
+        allow delete: if isOwner(userId);
+      }
+
+      // Subcollection: /users/{userId}/meals/{mealId}
+      match /meals/{mealId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidMealEntry(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidMealEntry(request.resource.data, userId) && areImmutableMealEntryFieldsUnchanged();
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // Default deny all access to any unspecified document path
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
