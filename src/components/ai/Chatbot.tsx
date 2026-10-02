@@ -86,7 +86,7 @@ export const Chatbot: React.FC = () => {
   return (
     <>
       {!open && (
-        <button onClick={() => setOpen(true)} className="fixed right-5 bottom-5 md:right-7 md:bottom-7 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/30 flex items-center justify-center transition-all hover:scale-105" title="Abrir assistente Aura">
+        <button onClick={() => setOpen(true)} className="bodyfit-chat-launcher fixed right-5 bottom-5 md:right-7 md:bottom-7 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/30 flex items-center justify-center transition-all hover:scale-105" title="Abrir assistente Aura">
           <Bot className="w-7 h-7" />
         </button>
       )}
