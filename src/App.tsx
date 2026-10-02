@@ -6,6 +6,7 @@ import { InsightsView } from './components/insights/InsightsView';
 import { WorkoutsView } from './components/workouts/WorkoutsView';
 import { DietView } from './components/diet/DietView';
 import { ProfileView } from './components/profile/ProfileView';
+import { EvolutionView } from './components/evolution/EvolutionView';
 import { Chatbot } from './components/ai/Chatbot';
 import { getSampleHistoryData } from './data/seedData';
 import { addWeightEntry, addWorkout, addMeal } from './firebase/firestoreService';
@@ -13,7 +14,7 @@ import { Flame, TrendingUp, Dumbbell, Apple, User, Sparkles } from 'lucide-react
 
 export const App: React.FC = () => {
   const { user, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState<'insights' | 'workouts' | 'diet' | 'profile'>('insights');
+  const [activeTab, setActiveTab] = useState<'insights' | 'workouts' | 'diet' | 'evolution' | 'profile'>('insights');
   const [seeding, setSeeding] = useState(false);
   const [seedNotice, setSeedNotice] = useState<string | null>(null);
 
@@ -91,6 +92,7 @@ export const App: React.FC = () => {
         )}
         {activeTab === 'workouts' && <WorkoutsView />}
         {activeTab === 'diet' && <DietView />}
+        {activeTab === 'evolution' && <EvolutionView />}
         {activeTab === 'profile' && <ProfileView />}
       </main>
 
