@@ -6,6 +6,7 @@ import { InsightsView } from './components/insights/InsightsView';
 import { WorkoutsView } from './components/workouts/WorkoutsView';
 import { DietView } from './components/diet/DietView';
 import { ProfileView } from './components/profile/ProfileView';
+import { Chatbot } from './components/ai/Chatbot';
 import { getSampleHistoryData } from './data/seedData';
 import { addWeightEntry, addWorkout, addMeal } from './firebase/firestoreService';
 import { Flame, TrendingUp, Dumbbell, Apple, User, Sparkles } from 'lucide-react';
@@ -143,6 +144,8 @@ export const App: React.FC = () => {
           <span>Perfil</span>
         </button>
       </nav>
+
+      <Chatbot />
     </div>
   );
 };
