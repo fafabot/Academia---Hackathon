@@ -172,22 +172,22 @@ button { cursor: pointer; }
 /* Shared reference-repo dashboard language */
 .max-w-7xl { max-width:1230px !important; }
 .max-w-6xl { max-width:1100px !important; }
-.bg-slate-50, .dark\\:bg-slate-950 { background:transparent !important; }
+.bg-slate-50, .dark\:bg-slate-950 { background:transparent !important; }
 .text-slate-900 { color:var(--text-main) !important; }
-.dark\\:text-white { color:var(--text-main) !important; }
-.text-slate-500, .dark\\:text-slate-400 { color:var(--text-muted) !important; }
+.dark\:text-white { color:var(--text-main) !important; }
+.text-slate-500, .dark\:text-slate-400 { color:var(--text-muted) !important; }
 .text-slate-400 { color:#8799a3 !important; }
 .text-emerald-500, .text-emerald-400, .text-cyan-500 { color:var(--neon-blue) !important; }
 .text-orange-500 { color:#ff9d84 !important; }
 .text-purple-400, .text-purple-500 { color:#b9a1ff !important; }
-.border-slate-200, .dark\\:border-slate-800, .dark\\:border-slate-700 { border-color:var(--border-glass) !important; }
-.bg-white, .dark\\:bg-slate-900, .dark\\:bg-slate-950, .dark\\:bg-slate-800 { background-color:var(--bg-card) !important; }
-.bg-slate-100, .dark\\:bg-slate-800\\/80 { background-color:#141c24 !important; }
+.border-slate-200, .dark\:border-slate-800, .dark\:border-slate-700 { border-color:var(--border-glass) !important; }
+.bg-white, .dark\:bg-slate-900, .dark\:bg-slate-950, .dark\:bg-slate-800 { background-color:var(--bg-card) !important; }
+.bg-slate-100, .dark\:bg-slate-800\/80 { background-color:#141c24 !important; }
 .rounded-3xl, .rounded-2xl { border-radius:7px !important; }
 .shadow-xl, .shadow-2xl { box-shadow:var(--shadow) !important; }
 .bg-emerald-500 { background:var(--neon-blue) !important; color:#06131a !important; }
-.hover\\:bg-emerald-600:hover { background:#a6f1ff !important; }
-.focus\\:ring-emerald-500:focus { --tw-ring-color:rgba(114,229,255,.3) !important; }
+.hover\:bg-emerald-600:hover { background:#a6f1ff !important; }
+.focus\:ring-emerald-500:focus { --tw-ring-color:rgba(114,229,255,.3) !important; }
 
 /* Make cards/panels feel like the reference */
 .bodyfit-app-shell .p-5,
