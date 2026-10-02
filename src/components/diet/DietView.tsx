@@ -192,7 +192,12 @@ export const DietView: React.FC = () => {
       setSelectedDate(newMealDate);
       setActiveSubTab('diary');
     } catch (err: any) {
-      setMealFormError('Erro ao registrar refeição.');
+      console.error('Erro ao registrar refeição:', err);
+      if (err?.code === 'permission-denied') {
+        setMealFormError('O Firebase recusou a gravação. Verifique se a autenticação está ativa.');
+      } else {
+        setMealFormError('Não foi possível salvar a refeição. Verifique sua conexão e tente novamente.');
+      }
     } finally {
       setSavingMeal(false);
     }
