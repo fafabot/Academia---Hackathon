@@ -63,7 +63,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col pb-20 md:pb-10 transition-colors duration-300">
+    <div className="bodyfit-app-shell">
       
       {/* Top Navbar */}
       <Navbar
@@ -93,57 +93,6 @@ export const App: React.FC = () => {
         {activeTab === 'diet' && <DietView />}
         {activeTab === 'profile' && <ProfileView />}
       </main>
-
-      {/* Mobile Bottom Navigation Bar (Sticky for thumb ergonomics) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex justify-around items-center h-16 px-2">
-        <button
-          onClick={() => setActiveTab('insights')}
-          className={`flex flex-col items-center justify-center w-full h-full text-[10px] font-medium transition ${
-            activeTab === 'insights'
-              ? 'text-emerald-500 font-bold'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          <TrendingUp className="w-5 h-5 mb-0.5" />
-          <span>Insights</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('workouts')}
-          className={`flex flex-col items-center justify-center w-full h-full text-[10px] font-medium transition ${
-            activeTab === 'workouts'
-              ? 'text-emerald-500 font-bold'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          <Dumbbell className="w-5 h-5 mb-0.5" />
-          <span>Treino</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('diet')}
-          className={`flex flex-col items-center justify-center w-full h-full text-[10px] font-medium transition ${
-            activeTab === 'diet'
-              ? 'text-emerald-500 font-bold'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          <Apple className="w-5 h-5 mb-0.5" />
-          <span>Dieta</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('profile')}
-          className={`flex flex-col items-center justify-center w-full h-full text-[10px] font-medium transition ${
-            activeTab === 'profile'
-              ? 'text-emerald-500 font-bold'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          <User className="w-5 h-5 mb-0.5" />
-          <span>Perfil</span>
-        </button>
-      </nav>
 
       <Chatbot />
     </div>
