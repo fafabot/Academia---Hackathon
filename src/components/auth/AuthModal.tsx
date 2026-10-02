@@ -112,7 +112,7 @@ export const AuthModal: React.FC = () => {
         {/* Brand header */}
         <div className="text-center mb-6 relative">
           <div className="bodyfit-auth-logo">
-            <img src={brandLogo} alt="Academia Aura" className="bodyfit-brand-image" />
+            <img src={brandLogo} alt="Bodyfit" className="bodyfit-brand-image" />
           </div>
           <p className="text-xs text-slate-400 mt-1">
             Plataforma Integrada de Treino, Alimentação & Evolução
