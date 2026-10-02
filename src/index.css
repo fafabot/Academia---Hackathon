@@ -2,73 +2,345 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 :root {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color-scheme: light dark;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color-scheme: dark;
+  background: #080d12;
+  color: #e8f0f2;
 }
 
-/* Custom Theme Overrides */
-html.dark {
-  --bg-primary: #090d16;
-  --bg-secondary: #0f172a;
-  --bg-card: #1e293b;
-  --border-color: #334155;
-  --accent: #22c55e;
+html, body, #root {
+  min-height: 100%;
+  margin: 0;
 }
 
-html.theme-light {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --bg-card: #ffffff;
-  --border-color: #e2e8f0;
-  --accent: #16a34a;
+body {
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 75% 0%, rgba(114, 229, 255, .08), transparent 30%),
+    radial-gradient(circle at 10% 50%, rgba(55, 255, 146, .035), transparent 25%),
+    #080d12;
+  color: #e8f0f2;
 }
 
-html.theme-emerald {
-  --bg-primary: #022c22;
-  --bg-secondary: #064e3b;
-  --bg-card: #065f46;
-  --border-color: #047857;
-  --accent: #34d399;
+button, input, select, textarea {
+  font-family: inherit;
 }
 
-html.theme-cyberpunk {
-  --bg-primary: #0f051d;
-  --bg-secondary: #1a0b2e;
-  --bg-card: #28124d;
-  --border-color: #6b21a8;
-  --accent: #06b6d4;
+button {
+  cursor: pointer;
 }
 
-html.theme-sunset {
-  --bg-primary: #1c0e06;
-  --bg-secondary: #2d1607;
-  --bg-card: #451a03;
-  --border-color: #78350f;
-  --accent: #f97316;
-}
-
-/* Glassmorphism helpers */
-.glass-card {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Custom scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #080d12;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
-  border-radius: 9999px;
+  background: #273841;
+  border-radius: 99px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
+  background: #72e5ff;
+}
+
+/* BODY FIT HEADER */
+.bodyfit-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid rgba(114, 229, 255, .14);
+  background: rgba(8, 13, 18, .92);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, .22);
+}
+
+.bodyfit-header-inner {
+  width: min(1180px, calc(100% - 38px));
+  min-height: 72px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.bodyfit-brand {
+  border: 0;
+  background: transparent;
+  color: #f1f6f7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.bodyfit-logo-frame {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(114, 229, 255, .35);
+  border-radius: 6px;
+  background: rgba(114, 229, 255, .06);
+  box-shadow: 0 0 24px rgba(114, 229, 255, .08);
+  overflow: hidden;
+}
+
+.bodyfit-logo {
+  width: 31px;
+  height: 31px;
+  object-fit: contain;
+}
+
+.bodyfit-brand-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.bodyfit-brand-name span {
+  color: #72e5ff;
+}
+
+.bodyfit-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.bodyfit-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 9px 11px;
+  background: transparent;
+  color: #81949d;
+  font-size: 12px;
+  font-weight: 600;
+  transition: .2s ease;
+}
+
+.bodyfit-nav-item:hover {
+  color: #e9f4f6;
+  background: #111b22;
+  border-color: rgba(114, 229, 255, .1);
+}
+
+.bodyfit-nav-item.active {
+  color: #72e5ff;
+  background: rgba(114, 229, 255, .08);
+  border-color: rgba(114, 229, 255, .2);
+  box-shadow: inset 0 0 20px rgba(114, 229, 255, .025);
+}
+
+.bodyfit-user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.bodyfit-demo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(55, 255, 146, .18);
+  border-radius: 5px;
+  color: #72e5ff;
+  background: rgba(55, 255, 146, .04);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.bodyfit-demo:hover {
+  background: rgba(55, 255, 146, .09);
+}
+
+.bodyfit-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-left: 10px;
+  border-left: 1px solid rgba(114, 229, 255, .12);
+}
+
+.bodyfit-user-info strong {
+  color: #dce8eb;
+  font-size: 11px;
+}
+
+.bodyfit-user-info small {
+  color: #71838c;
+  font-size: 9px;
+  margin-top: 2px;
+}
+
+.bodyfit-logout,
+.bodyfit-menu {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(114, 229, 255, .12);
+  border-radius: 5px;
+  background: #0e171d;
+  color: #83969f;
+}
+
+.bodyfit-logout:hover {
+  color: #ff8297;
+  border-color: rgba(255, 130, 151, .3);
+}
+
+.bodyfit-menu,
+.bodyfit-mobile-nav {
+  display: none;
+}
+
+/* GLOBAL APPLICATION SURFACE */
+main.flex-1 {
+  background: transparent;
+}
+
+.max-w-7xl {
+  max-width: 1180px !important;
+}
+
+.bg-slate-50 {
+  background: transparent !important;
+}
+
+.dark\:bg-slate-950 {
+  background: transparent !important;
+}
+
+.text-slate-900 {
+  color: #e8f0f2 !important;
+}
+
+.dark\:text-white {
+  color: #eef6f7 !important;
+}
+
+.text-slate-500,
+.dark\:text-slate-400 {
+  color: #81949d !important;
+}
+
+.text-emerald-500,
+.text-emerald-400 {
+  color: #72e5ff !important;
+}
+
+/* DASHBOARD CARDS */
+.rounded-3xl,
+.rounded-2xl {
+  border-radius: 7px !important;
+}
+
+.shadow-xl,
+.shadow-2xl {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .28) !important;
+}
+
+.border-slate-200,
+.dark\:border-slate-800,
+.dark\:border-slate-700 {
+  border-color: rgba(114, 229, 255, .14) !important;
+}
+
+.bg-white,
+.dark\:bg-slate-900,
+.dark\:bg-slate-950,
+.dark\:bg-slate-800 {
+  background-color: #101920 !important;
+}
+
+.bg-slate-100,
+.dark\:bg-slate-800\/80 {
+  background-color: #111c23 !important;
+}
+
+/* Keep important green actions but give them BodyFit cyan accent */
+.bg-emerald-500 {
+  background: #72e5ff !important;
+  color: #071015 !important;
+}
+
+.hover\:bg-emerald-600:hover {
+  background: #a5f0ff !important;
+}
+
+.focus\:ring-emerald-500:focus {
+  --tw-ring-color: rgba(114, 229, 255, .35) !important;
+}
+
+/* LOADING SCREEN */
+.min-h-screen.bg-slate-950 {
+  background:
+    radial-gradient(circle at center, rgba(114, 229, 255, .08), transparent 35%),
+    #080d12 !important;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .bodyfit-header-inner {
+    width: min(100% - 28px, 1180px);
+    min-height: 64px;
+  }
+
+  .bodyfit-nav,
+  .bodyfit-demo,
+  .bodyfit-user-info {
+    display: none;
+  }
+
+  .bodyfit-menu {
+    display: grid;
+  }
+
+  .bodyfit-mobile-nav {
+    display: grid;
+    gap: 5px;
+    padding: 10px 14px 14px;
+    border-top: 1px solid rgba(114, 229, 255, .1);
+    background: #0a1117;
+  }
+
+  .bodyfit-mobile-nav .bodyfit-nav-item {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .bodyfit-mobile-nav .bodyfit-nav-item.active {
+    color: #72e5ff;
+  }
+}
+
+@media (max-width: 560px) {
+  .bodyfit-brand-name {
+    font-size: 16px;
+  }
+
+  .bodyfit-logo-frame {
+    width: 36px;
+    height: 36px;
+  }
+
+  .bodyfit-logo {
+    width: 28px;
+    height: 28px;
+  }
 }
