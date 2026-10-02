@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Bot, Camera, Image as ImageIcon, Loader2, Send, Sparkles, X } from 'lucide-react';
-import { analyzeFoodImage, createAuraChat, sendAuraMessage } from '../../firebase/aiService';
+import { createAuraChat, sendAuraMessage } from '../../firebase/aiService';
 
 interface ChatMessage {
   id: number;
@@ -64,10 +64,26 @@ export const Chatbot: React.FC = () => {
 
     try {
       const chat = getChat();
-      const response = image
-        ? await analyzeFoodImage(chat, image, text)
-        : await sendAuraMessage(chat, text);
-      addMessage('assistant', response);
+      if (image) {
+        // Demonstração: a análise da imagem usa uma resposta fictícia inspirada no projeto de referência.
+        // Assim a apresentação não depende do Gemini/App Check para mostrar o recurso.
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        addMessage(
+          'assistant',
+          'Prato Identificado: Refeição Fitness Fit\\n\\n' +
+          'Confiança: 96%\\n\\n' +
+          'Alimentos detectados: Peito de frango grelhado (~120g), Arroz integral (~100g) e Salada verde mista.\\n\\n' +
+          'Calorias: ~380 kcal\\n' +
+          'Proteína: 38g\\n' +
+          'Carboidratos: 28g\\n' +
+          'Gorduras: 5g\\n\\n' +
+          'Esta análise é uma demonstração fictícia para apresentação.'
+        );
+      } else {
+        const chat = getChat();
+        const response = await sendAuraMessage(chat, text);
+        addMessage('assistant', response);
+      }
     } catch (error) {
       console.error('Erro no chatbot Aura:', error);
       addMessage('assistant', 'Não consegui falar com a IA agora. Verifique se o Gemini está habilitado no Firebase e tente novamente.');
