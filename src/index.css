@@ -344,3 +344,31 @@ main.flex-1 {
     height: 28px;
   }
 }
+
+/* AUTH BODY FIT */
+.bodyfit-auth-logo {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(114, 229, 255, .35);
+  border-radius: 8px;
+  background: rgba(114, 229, 255, .05);
+  box-shadow: 0 0 35px rgba(114, 229, 255, .1);
+}
+.bodyfit-auth-logo img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+.bodyfit-auth-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: #f0f6f7;
+}
+.bodyfit-auth-title span {
+  color: #72e5ff;
+}
