@@ -14,8 +14,8 @@ import {
 import { useAuth } from '../../context/AuthContext';
 
 interface NavbarProps {
-  activeTab: 'insights' | 'workouts' | 'diet' | 'profile';
-  setActiveTab: (tab: 'insights' | 'workouts' | 'diet' | 'profile') => void;
+  activeTab: 'insights' | 'workouts' | 'diet' | 'evolution' | 'profile';
+  setActiveTab: (tab: 'insights' | 'workouts' | 'diet' | 'evolution' | 'profile') => void;
   onSeedData: () => void;
 }
 
@@ -27,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onSeedD
     { id: 'insights' as const, label: 'Visão geral', icon: TrendingUp },
     { id: 'workouts' as const, label: 'Treinos', icon: Dumbbell },
     { id: 'diet' as const, label: 'Alimentação', icon: Apple },
+    { id: 'evolution' as const, label: 'Evolução', icon: Activity },
     { id: 'profile' as const, label: 'Perfil', icon: UserIcon },
   ];
 
