@@ -6,6 +6,7 @@ import {
   logoutUser,
   resetUserPassword,
   subscribeToAuth,
+  loginAnonymously,
 } from '../firebase/authService';
 import {
   getUserProfileDoc,
@@ -30,10 +31,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const DEMO_USER_ID = 'demo_atleta_aura_123';
-
-const DEMO_PROFILE: UserProfile = {
-  uid: DEMO_USER_ID,
+const createDemoProfile = (uid: string): UserProfile => ({
+  uid,
   email: 'atleta@aura.com',
   displayName: 'Alex Silva (Atleta)',
   targetWeight: 78,
@@ -44,7 +43,7 @@ const DEMO_PROFILE: UserProfile = {
   themePreference: 'dark',
   createdAt: '2026-09-01T08:00:00.000Z',
   updatedAt: new Date().toISOString(),
-};
+});
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -57,9 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loadProfile = async (uid: string) => {
     try {
       let p = await getUserProfileDoc(uid);
-      if (!p && uid === DEMO_USER_ID) {
-        p = DEMO_PROFILE;
-      }
+      
       if (p) {
         setProfile(p);
         if (p.themePreference) {
@@ -76,13 +73,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const savedDemo = localStorage.getItem('aura_is_demo') === 'true';
     if (savedDemo) {
       setIsDemoMode(true);
-      const demoUserObj = {
-        uid: DEMO_USER_ID,
-        email: 'atleta@aura.com',
-        displayName: 'Alex Silva',
-      } as unknown as User;
-      setUser(demoUserObj);
-      loadProfile(DEMO_USER_ID).finally(() => setLoading(false));
+      loginAnonymously()
+        .then(async (firebaseUser) => {
+          setUser(firebaseUser);
+          setIsDemoMode(true);
+          const demoProfile = createDemoProfile(firebaseUser.uid);
+          await createUserProfileDoc(demoProfile);
+          setProfile(demoProfile);
+          setTheme(demoProfile.themePreference);
+        })
+        .catch((error) => {
+          console.error('Erro ao iniciar modo demonstração:', error);
+          localStorage.removeItem('aura_is_demo');
+          setIsDemoMode(false);
+          setUser(null);
+          setProfile(null);
+        })
+        .finally(() => setLoading(false));
       return;
     }
 
@@ -154,17 +161,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAsDemoAthlete = () => {
     setIsDemoMode(true);
     localStorage.setItem('aura_is_demo', 'true');
-    const demoUserObj = {
-      uid: DEMO_USER_ID,
-      email: 'atleta@aura.com',
-      displayName: 'Alex Silva',
-    } as unknown as User;
-    setUser(demoUserObj);
-    createUserProfileDoc(DEMO_PROFILE);
-    setProfile(DEMO_PROFILE);
-    if (DEMO_PROFILE.themePreference) {
-      setTheme(DEMO_PROFILE.themePreference);
-    }
+    loginAnonymously()
+      .then(async (firebaseUser) => {
+        setUser(firebaseUser);
+        const demoProfile = createDemoProfile(firebaseUser.uid);
+        await createUserProfileDoc(demoProfile);
+        setProfile(demoProfile);
+        setTheme(demoProfile.themePreference);
+      })
+      .catch((error) => {
+        console.error('Erro ao iniciar modo demonstração:', error);
+        setIsDemoMode(false);
+        localStorage.removeItem('aura_is_demo');
+        setUser(null);
+        setProfile(null);
+      });
   };
 
   return (

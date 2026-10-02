@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInAnonymously,
   signOut,
   sendPasswordResetEmail,
   updateProfile,
@@ -77,6 +78,12 @@ export async function registerWithEmail(
 /**
  * Sign in existing user with email and password
  */
+export async function loginAnonymously(): Promise<User> {
+  if (auth.currentUser) return auth.currentUser;
+  const userCredential = await signInAnonymously(auth);
+  return userCredential.user;
+}
+
 export async function loginWithEmail(email: string, pass: string): Promise<User> {
   const userCredential = await signInWithEmailAndPassword(auth, email, pass);
   return userCredential.user;
