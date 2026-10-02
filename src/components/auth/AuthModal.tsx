@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { Flame, Mail, Lock, User, Target, Scale, Ruler, AlertCircle, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, User, Target, Scale, Ruler, AlertCircle, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { getAuthErrorMessage } from '../../firebase/authService';
 import { isStrictlyPositive } from '../../utils/validation';
 
+const brandLogoDark = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
+const brandLogoLight = 'https://raw.githubusercontent.com/souzaa22/Academia/main/img/bodyfit2-removebg-preview.png';
+
 export const AuthModal: React.FC = () => {
   const { login, signup, resetPassword, loginAsDemoAthlete } = useAuth();
+  const { theme } = useTheme();
   const [mode, setMode] = useState<'login' | 'signup' | 'reset'>('login');
+  const brandLogo = theme === 'light' ? brandLogoLight : brandLogoDark;
 
   // Form states
   const [email, setEmail] = useState('');
@@ -105,14 +111,11 @@ export const AuthModal: React.FC = () => {
 
         {/* Brand header */}
         <div className="text-center mb-6 relative">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-lg shadow-emerald-500/30 text-white mb-3">
-            <Flame className="w-8 h-8" />
+          <div className="bodyfit-auth-logo">
+            <img src={brandLogo} alt="Academia Aura" className="bodyfit-brand-image" />
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white">
-            ACADEMIA <span className="text-emerald-400">AURA</span>
-          </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Plataforma Integrada de Treino, Dieta & Evolução Física
+            Plataforma Integrada de Treino, Alimentação & Evolução
           </p>
         </div>
 
@@ -121,7 +124,7 @@ export const AuthModal: React.FC = () => {
           <div>
             <p className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              Acesso Rápido de Demonstração
+              Acesso Rápido
             </p>
             <p className="text-[11px] text-slate-400">
               Explore treinos, dieta e gráficos pré-carregados
@@ -132,7 +135,7 @@ export const AuthModal: React.FC = () => {
             onClick={loginAsDemoAthlete}
             className="px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition shadow-md shadow-emerald-600/30 whitespace-nowrap"
           >
-            Entrar Demo
+            Entrar
           </button>
         </div>
 
