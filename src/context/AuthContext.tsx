@@ -56,9 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loadProfile = async (uid: string) => {
     try {
       let p = await getUserProfileDoc(uid);
-      if (!p && uid === DEMO_USER_ID) {
-        p = DEMO_PROFILE;
-      }
+      
       if (p) {
         setProfile(p);
         if (p.themePreference) {
