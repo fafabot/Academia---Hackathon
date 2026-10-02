@@ -1,4 +1,4 @@
-# Academia Aura — Plataforma Integrada de Treino, Dieta & Evolução Física (SPA)
+# Bodyfit — Plataforma Integrada de Treino, Dieta & Evolução Física (SPA)
 
 Plataforma completa e responsiva desenvolvida em **React 18 + TypeScript + Vite + Tailwind CSS + Firebase (Authentication & Firestore)** para acompanhamento físico e nutricional integrado com personalização visual de temas por usuário.
 
@@ -14,7 +14,7 @@ Plataforma completa e responsiva desenvolvida em **React 18 + TypeScript + Vite 
 - **Personalização de Tema por Usuário**: 5 temas visuais persistidos no Firestore e no navegador:
   - 🌙 *Escuro Minimalista*
   - ☀️ *Claro Clean*
-  - 🌿 *Verde Aura (Florestal)*
+  - 🌿 *Verde Bodyfit (Florestal)*
   - ⚡ *Cyberpunk Neon*
   - 🌅 *Sunset Amber*
 
