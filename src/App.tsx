@@ -54,8 +54,8 @@ export const App: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white">
-        <img src={brandLogo} alt="Academia Aura" className="bodyfit-brand-image w-[380px] max-w-[80vw]" />
-        <span className="text-xs text-slate-500 mt-2">Carregando Academia Aura...</span>
+        <img src={brandLogo} alt="Bodyfit" className="bodyfit-brand-image w-[380px] max-w-[80vw]" />
+        <span className="text-xs text-slate-500 mt-2">Carregando Bodyfit...</span>
       </div>
     );
   }
