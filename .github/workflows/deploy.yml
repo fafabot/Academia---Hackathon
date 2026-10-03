@@ -48,6 +48,9 @@ jobs:
             git push
           fi
 
+      - name: Fix executable permissions
+        run: chmod +x node_modules/.bin/*
+
       - name: Build project
         env:
           VITE_RECAPTCHA_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
