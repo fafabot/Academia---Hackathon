@@ -69,7 +69,7 @@ export const Chatbot: React.FC = () => {
         : await sendBodyfitMessage(chat, text);
       addMessage('assistant', response);
     } catch (error) {
-      console.error('Erro no chatbot Bodyfit:', error);
+      console.error('Erro no chatbot Aura:', error);
       addMessage('assistant', 'Não consegui falar com a IA agora. Verifique se o Gemini está habilitado no Firebase e tente novamente.');
     } finally {
       setLoading(false);
@@ -86,7 +86,7 @@ export const Chatbot: React.FC = () => {
   return (
     <>
       {!open && (
-        <button onClick={() => setOpen(true)} className="bodyfit-chat-launcher fixed right-5 bottom-5 md:right-7 md:bottom-7 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/30 flex items-center justify-center transition-all hover:scale-105" title="Abrir assistente Bodyfit">
+        <button onClick={() => setOpen(true)} className="bodyfit-chat-launcher fixed right-5 bottom-5 md:right-7 md:bottom-7 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/30 flex items-center justify-center transition-all hover:scale-105" title="Abrir Aura">
           <Bot className="w-7 h-7" />
         </button>
       )}
@@ -97,8 +97,8 @@ export const Chatbot: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center"><Sparkles className="w-5 h-5" /></div>
               <div>
-                <p className="font-bold text-sm">Bodyfit IA</p>
-                <p className="text-[11px] text-emerald-50">Seu assistente da Bodyfit</p>
+                <p className="font-bold text-sm">Aura</p>
+                <p className="text-[11px] text-emerald-50">Sua assistente virtual</p>
               </div>
             </div>
             <button onClick={() => setOpen(false)} className="p-2 rounded-lg hover:bg-white/10" title="Fechar"><X className="w-5 h-5" /></button>
